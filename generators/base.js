@@ -153,8 +153,41 @@ class BaseGenerator {
       if (element.rotation) {
         image = image.rotate(element.rotation, { background: { r: 0, g: 0, b: 0, alpha: 0 } });
       }
-  
-      const bufferInfo = await image.toBuffer({ resolveWithObject: true });
+
+      if (element.backgroundColor) {
+        image = image.flatten({ background: element.backgroundColor });
+      }
+
+      let bufferInfo = await image.toBuffer({ resolveWithObject: true });
+
+      if (element.mask === 'circle') {
+        const radius = Math.min(bufferInfo.info.width, bufferInfo.info.height) / 2;
+        const circle = Buffer.from(
+          `<svg width="${bufferInfo.info.width}" height="${bufferInfo.info.height}">
+              <circle cx="${radius}" cy="${radius}" r="${radius}" fill="white"/>
+           </svg>`
+        );
+        bufferInfo = await sharp(bufferInfo.data)
+          .composite([{ input: circle, blend: 'dest-in' }])
+          .toBuffer({ resolveWithObject: true });
+      }
+
+      if (element.borderWidth) {
+        const borderWidth = parseInt(element.borderWidth, 10);
+        if (!isNaN(borderWidth) && borderWidth > 0) {
+          const color = element.borderColor || '#000000';
+          const borderSvg = element.mask === 'circle'
+            ? `<svg width="${bufferInfo.info.width}" height="${bufferInfo.info.height}">
+                 <circle cx="${bufferInfo.info.width / 2}" cy="${bufferInfo.info.height / 2}" r="${Math.min(bufferInfo.info.width, bufferInfo.info.height) / 2 - borderWidth / 2}" fill="none" stroke="${color}" stroke-width="${borderWidth}"/>
+               </svg>`
+            : `<svg width="${bufferInfo.info.width}" height="${bufferInfo.info.height}">
+                 <rect x="${borderWidth / 2}" y="${borderWidth / 2}" width="${bufferInfo.info.width - borderWidth}" height="${bufferInfo.info.height - borderWidth}" fill="none" stroke="${color}" stroke-width="${borderWidth}"/>
+               </svg>`;
+          bufferInfo = await sharp(bufferInfo.data)
+            .composite([{ input: Buffer.from(borderSvg) }])
+            .toBuffer({ resolveWithObject: true });
+        }
+      }
   
       // Calculate position
       const { finalLeft, finalTop } = this.calculateElementPosition(element, generator, elementsData, bufferInfo);

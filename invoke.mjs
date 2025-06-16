@@ -18,6 +18,10 @@ const event = {
                 "src": "assets/avatar.webp",
                 "width": 410,
                 "height": null,
+                "mask": "circle",
+                "backgroundColor": "#eeeeee",
+                "borderWidth": 8,
+                "borderColor": "#ffffff",
                 "origin": "center",
                 "x": null,
                 "y": -300

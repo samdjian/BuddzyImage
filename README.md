@@ -43,6 +43,10 @@ This will invoke the lambda function locally and generate an `outputs/output-gen
         *   `type`: The type of element. Can be `image` or `text`.
             If type is `image`, the element will be an image and have the following properties:
             *   `src`: The path to the image file. Can be a relative path to the assets folder, an absolute path or a URL. Required.
+            *   `mask`: Optional. Use `'circle'` to crop the image to a circular profile photo.
+            *   `borderWidth`: Optional. Thickness of a border to draw around the image (in pixels).
+            *   `borderColor`: Optional. Color of the border (defaults to black).
+            *   `backgroundColor`: Optional. Fill color used if the image has transparency.
             If type is `text`, the element will be a text and have the following properties:
             *   `text`: The text to display.
             *   `fontFamily`: The font family of the text.
