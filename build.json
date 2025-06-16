@@ -1,0 +1,96 @@
+{
+    "generator": "generic",
+    "region": "eu-west-3",
+    "outName": "users/1/shared/1/20250430120000.png",
+    "params": {
+        "imageWidth": 800,
+        "imageHeight": 1422,
+        "background": "s3://buddzy-assets/common/sharing/1/bg.jpg",
+        "elements": [
+            {
+                "id": "avatar",
+                "type": "image",
+                "src": "s3://buddzy-assets/users/1/avatar.webp",
+                "width": 410,
+                "height": null,
+                "origin": "center",
+                "x": null,
+                "y": -300
+            },
+            {
+                "id": "crown",
+                "type": "image",
+                "src": "s3://buddzy-assets/common/sharing/crown.webp",
+                "width": 400,
+                "height": null,
+                "origin": "avatar",
+                "x": -80,
+                "y": -200
+            },
+             {
+                 "id": "logo",
+                 "type": "image",
+                 "src": "s3://buddzy-assets/common/sharing/logo.png",
+                 "width": 300,
+                 "height": null,
+                 "rotation": -10,
+                 "origin": null,
+                 "x": 480,
+                 "y": 1252
+             },
+             {
+               "id": "title",
+               "type": "text",
+               "text": "Jeremy",
+               "fontFamily": "sans-serif",
+               "fontSize": "120px",
+               "fontWeight": "800",
+               "origin": "avatar",
+               "y": -250
+             },
+             {
+               "id": "text-line1.1",
+               "type": "text",
+               "text": "est",
+               "fontFamily": "sans-serif",
+               "fontSize": "80px",
+               "fontWeight": "bold",
+               "color": "#000000",
+               "x": 250,
+               "y": 1132
+             },
+             {
+               "id": "text-line1.2",
+               "type": "text",
+               "text": "mon",
+               "fontFamily": "serif",
+               "fontStyle": "italic",
+               "fontSize": "80px",
+               "color": "#000000",
+               "x": 400,
+               "y": 1132
+             },
+             {
+               "id": "text-line2.1",
+               "type": "text",
+               "text": "numéro",
+               "fontFamily": "sans-serif",
+               "fontSize": "80px",
+               "color": "#05A2FC",
+               "x": 200,
+               "y": 1222
+             },
+             {
+               "id": "text-line2.2",
+               "type": "text",
+               "text": "1",
+               "fontFamily": "serif",
+               "fontSize": "150px",
+               "fontWeight": "bold",
+               "color": "#FBCF1C",
+               "x": 480,
+               "y": 1222
+             }
+        ]
+    }
+}
