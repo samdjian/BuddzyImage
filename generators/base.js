@@ -228,6 +228,10 @@ class BaseGenerator {
     const fontStyle = element.fontStyle || 'normal';
     const fill = element.color || '#000000';
     const rotation = element.rotation || 0;
+
+    const strokeColor = element.strokeColor;
+    const strokeWidth = element.strokeWidth;
+    const shadow = element.shadow;
   
     // --- Text Position Calculation ---
     let baseX = 0, baseY = 0;
@@ -263,10 +267,54 @@ class BaseGenerator {
   
     // Basic escaping for text content within SVG
     const escapedText = element.text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  
+
+    const attrs = [
+      `x="${xPos}"`,
+      `y="${yPos}"`,
+      `font-family="${fontFamily}"`,
+      `font-size="${fontSize}"`,
+      `font-weight="${fontWeight}"`,
+      `font-style="${fontStyle}"`,
+      `fill="${fill}"`,
+      `text-anchor="${textAnchor}"`,
+      `alignment-baseline="${alignmentBaseline}"`,
+    ];
+    if (transform) attrs.push(`transform="${transform}"`);
+    if (strokeColor) attrs.push(`stroke="${strokeColor}"`);
+    if (strokeWidth) attrs.push(`stroke-width="${strokeWidth}"`);
+
+    let shadowText = '';
+    let filterDefs = '';
+    if (shadow) {
+      const shadowAttrs = [
+        `x="${xPos + (shadow.offsetX || 0)}"`,
+        `y="${yPos + (shadow.offsetY || 0)}"`,
+        `font-family="${fontFamily}"`,
+        `font-size="${fontSize}"`,
+        `font-weight="${fontWeight}"`,
+        `font-style="${fontStyle}"`,
+        `fill="${shadow.color || fill}"`,
+        `text-anchor="${textAnchor}"`,
+        `alignment-baseline="${alignmentBaseline}"`,
+      ];
+      if (transform) shadowAttrs.push(`transform="${transform}"`);
+      if (shadow.blur) {
+        const filterId = `shadow-blur-${element.id}`;
+        filterDefs = `<filter id="${filterId}"><feGaussianBlur stdDeviation="${shadow.blur}" /></filter>`;
+        shadowAttrs.push(`filter="url(#${filterId})"`);
+      }
+      shadowText = `<text ${shadowAttrs.join(' ')}>${escapedText}</text>`;
+    }
+
+    const mainText = `<text ${attrs.join(' ')}>${escapedText}</text>`;
+    let svgContent = '';
+    if (filterDefs) svgContent += `<defs>${filterDefs}</defs>`;
+    if (shadowText) svgContent += shadowText;
+    svgContent += mainText;
+
     return {
       type: 'svg',
-      data: `<text x="${xPos}" y="${yPos}" font-family="${fontFamily}" font-size="${fontSize}" font-weight="${fontWeight}" font-style="${fontStyle}" fill="${fill}" text-anchor="${textAnchor}" alignment-baseline="${alignmentBaseline}" transform="${transform}">${escapedText}</text>`,
+      data: svgContent,
       elementsData: calculatedData
     };
   }

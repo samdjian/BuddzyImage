@@ -55,3 +55,10 @@ This will invoke the lambda function locally and generate an `outputs/output-gen
             *   `fontSize`: The size of the font.
             *   `color`: The color of the text.
             *   `rotation`: The rotation of the text.
+            *   `strokeColor`: Optional. Outline color of the text.
+            *   `strokeWidth`: Optional. Outline width in pixels.
+            *   `shadow`: Optional. Apply a shadow behind the text. It is an object with:
+                *   `color`: Shadow color.
+                *   `offsetX`: Horizontal offset relative to the text.
+                *   `offsetY`: Vertical offset relative to the text.
+                *   `blur`: Blur radius for the shadow.
