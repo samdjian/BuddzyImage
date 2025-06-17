@@ -45,7 +45,7 @@ class GenericGenerator extends BaseGenerator {
       if (svgTextElements.length > 0) {
         // Ensure SVG has proper namespace and potentially style block if needed later
         // Add encoding attribute
-        const svgOverlay = `<svg width="${this.imageWidth}" height="${this.imageHeight}" xmlns="http://www.w3.org/2000/svg" encoding="UTF-8">${svgTextElements.join('')}</svg>`;
+        const svgOverlay = `<svg width="${this.imageWidth}" height="${this.imageHeight}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" encoding="UTF-8">${svgTextElements.join('')}</svg>`;
         console.log('Generated SVG:', svgOverlay); // Log SVG for debugging
         const svgBuffer = Buffer.from(svgOverlay, 'utf8'); // Specify buffer encoding
         compositeOperations.push({ input: svgBuffer, top: 0, left: 0, blend: 'over' }); // Use 'over' blend mode
