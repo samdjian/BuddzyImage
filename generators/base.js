@@ -232,6 +232,7 @@ class BaseGenerator {
     const strokeColor = element.strokeColor;
     const strokeWidth = element.strokeWidth;
     const shadow = element.shadow;
+    const curve = element.curve;
   
     // --- Text Position Calculation ---
     let baseX = 0, baseY = 0;
@@ -269,8 +270,8 @@ class BaseGenerator {
     const escapedText = element.text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
     const attrs = [
-      `x="${xPos}"`,
-      `y="${yPos}"`,
+      !curve ? `x="${xPos}"` : '',
+      !curve ? `y="${yPos}"` : '',
       `font-family="${fontFamily}"`,
       `font-size="${fontSize}"`,
       `font-weight="${fontWeight}"`,
@@ -278,15 +279,17 @@ class BaseGenerator {
       `fill="${fill}"`,
       `text-anchor="${textAnchor}"`,
       `alignment-baseline="${alignmentBaseline}"`,
-    ];
+    ].filter(Boolean);
     if (transform) attrs.push(`transform="${transform}"`);
     if (strokeColor) attrs.push(`stroke="${strokeColor}"`);
     if (strokeWidth) attrs.push(`stroke-width="${strokeWidth}"`);
 
     let shadowText = '';
     let filterDefs = '';
+    let pathDef = '';
+    let shadowAttrs;
     if (shadow) {
-      const shadowAttrs = [
+      shadowAttrs = [
         `x="${xPos + (shadow.offsetX || 0)}"`,
         `y="${yPos + (shadow.offsetY || 0)}"`,
         `font-family="${fontFamily}"`,
@@ -303,12 +306,31 @@ class BaseGenerator {
         filterDefs = `<filter id="${filterId}"><feGaussianBlur stdDeviation="${shadow.blur}" /></filter>`;
         shadowAttrs.push(`filter="url(#${filterId})"`);
       }
+    }
+    let mainText = `<text ${attrs.join(' ')}>${escapedText}</text>`;
+
+    if (curve) {
+      const { radius, startAngle, endAngle } = curve;
+      const toRad = (deg) => (deg * Math.PI) / 180;
+      const startX = xPos + radius * Math.cos(toRad(startAngle));
+      const startY = yPos + radius * Math.sin(toRad(startAngle));
+      const endX = xPos + radius * Math.cos(toRad(endAngle));
+      const endY = yPos + radius * Math.sin(toRad(endAngle));
+      const largeArcFlag = Math.abs(endAngle - startAngle) > 180 ? 1 : 0;
+      const sweepFlag = endAngle > startAngle ? 1 : 0;
+      const pathId = `curve-${element.id}`;
+      pathDef = `<path id="${pathId}" d="M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} ${sweepFlag} ${endX} ${endY}" fill="none"/>`;
+      mainText = `<text ${attrs.join(' ')}><textPath href="#${pathId}">${escapedText}</textPath></text>`;
+      if (shadow) {
+        shadowText = `<text ${shadowAttrs.join(' ')}><textPath href="#${pathId}">${escapedText}</textPath></text>`;
+      }
+    } else if (shadow) {
       shadowText = `<text ${shadowAttrs.join(' ')}>${escapedText}</text>`;
     }
 
-    const mainText = `<text ${attrs.join(' ')}>${escapedText}</text>`;
     let svgContent = '';
-    if (filterDefs) svgContent += `<defs>${filterDefs}</defs>`;
+    const defs = [pathDef, filterDefs].filter(Boolean).join('');
+    if (defs) svgContent += `<defs>${defs}</defs>`;
     if (shadowText) svgContent += shadowText;
     svgContent += mainText;
 
