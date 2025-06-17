@@ -320,9 +320,9 @@ class BaseGenerator {
       const sweepFlag = endAngle > startAngle ? 1 : 0;
       const pathId = `curve-${element.id}`;
       pathDef = `<path id="${pathId}" d="M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} ${sweepFlag} ${endX} ${endY}" fill="none"/>`;
-      mainText = `<text ${attrs.join(' ')}><textPath href="#${pathId}">${escapedText}</textPath></text>`;
+      mainText = `<text ${attrs.join(' ')}><textPath xlink:href="#${pathId}">${escapedText}</textPath></text>`;
       if (shadow) {
-        shadowText = `<text ${shadowAttrs.join(' ')}><textPath href="#${pathId}">${escapedText}</textPath></text>`;
+        shadowText = `<text ${shadowAttrs.join(' ')}><textPath xlink:href="#${pathId}">${escapedText}</textPath></text>`;
       }
     } else if (shadow) {
       shadowText = `<text ${shadowAttrs.join(' ')}>${escapedText}</text>`;

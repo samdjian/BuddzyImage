@@ -62,4 +62,4 @@ This will invoke the lambda function locally and generate an `outputs/output-gen
                 *   `offsetX`: Horizontal offset relative to the text.
                 *   `offsetY`: Vertical offset relative to the text.
                 *   `blur`: Blur radius for the shadow.
-            *   `curve`: Optional. Render the text along an arc. It should be an object `{ radius, startAngle, endAngle }` where angles are in degrees around the element's position (0° is to the right).
+            *   `curve`: Optional. Render the text along an arc. Provide `{ radius, startAngle, endAngle }` where angles are measured clockwise from the element's position (0° is to the right). If `startAngle` is greater than `endAngle`, the path is drawn counterclockwise.
